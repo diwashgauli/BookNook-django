@@ -24,7 +24,10 @@
                         {% endif %}
 
                         <p class="small text-muted">
-                            Posted by: <a href="#">{{ post.posted_by.username }}</a> 
+                            Posted by: 
+                            <a href="{% url 'user_profile' username=post.posted_by.username %}">
+                                {{ post.posted_by.username }}
+                            </a> 
                             on {{ post.created_at|date:"F d, Y" }}
                         </p>
 
@@ -50,23 +53,24 @@
 
             <!-- Comments Section -->
             <div class="comment-section mt-5">
-    <h3 class="section-title">Comments ({{ comments|length }})</h3>
-    {% for comment in comments %}
-        <div class="card mb-3">
-            <div class="card-body d-flex">
-                <img src="https://placehold.co/50x50/6c757d/FFFFFF?text={{ comment.user.username|slice:":1"|upper }}" class="rounded-circle me-3" alt="User avatar">
-                <div>
-                    <h6 class="fw-bold">{{ comment.user.get_full_name|default:comment.user.username }}
-                        <small class="text-muted fw-normal ms-2">{{ comment.created_at|timesince }} ago</small>
-                    </h6>
-                    <p>{{ comment.content }}</p>
-                </div>
+                <h3 class="section-title">Comments ({{ comments|length }})</h3>
+                {% for comment in comments %}
+                    <div class="card mb-3">
+                        <div class="card-body d-flex">
+                            <img src="https://placehold.co/50x50/6c757d/FFFFFF?text={{ comment.user.username|slice:":1"|upper }}" class="rounded-circle me-3" alt="User avatar">
+                            <div>
+                                <h6 class="fw-bold">
+                                    {{ comment.user.get_full_name|default:comment.user.username }}
+                                    <small class="text-muted fw-normal ms-2">{{ comment.created_at|timesince }} ago</small>
+                                </h6>
+                                <p>{{ comment.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No comments yet. Be the first to comment!</p>
+                {% endfor %}
             </div>
-        </div>
-    {% empty %}
-        <p>No comments yet. Be the first to comment!</p>
-    {% endfor %}
-</div>
 
         </div>
 
@@ -76,17 +80,16 @@
                 <div class="card">
                     <div class="card-header"><strong><i class="bi bi-plus-circle-fill"></i> Add Your Review</strong></div>
                     <div class="card-body">
-                      <form method="POST" action="{% url 'comment' %}">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="comment" class="form-label">Your Comment</label>
-        <textarea name="content" class="form-control" id="comment" rows="4" placeholder="Share your thoughts..."></textarea>
-    </div>
-    <!-- Include the post ID as a hidden input -->
-    <input type="hidden" name="post" value="{{ post.id }}">
-    <button type="submit" class="btn btn-primary w-100">Submit Review</button>
-</form>
-
+                        <form method="POST" action="{% url 'comment' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Your Comment</label>
+                                <textarea name="content" class="form-control" id="comment" rows="4" placeholder="Share your thoughts..."></textarea>
+                            </div>
+                            <!-- Include the post ID as a hidden input -->
+                            <input type="hidden" name="post" value="{{ post.id }}">
+                            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                        </form>
                     </div>
                 </div>
             </div>

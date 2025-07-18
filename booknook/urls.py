@@ -12,6 +12,10 @@ urlpatterns = [
     path('search/', views.BookSearchView.as_view(), name='book_search'),
     path('comment/', views.CommentView.as_view(), name='comment'),
     path('profile/edit/', views.EditProfileView.as_view(), name='edit-profile'),
+    path('profile/<str:username>/', views.UserProfileView.as_view(), name='user_profile'),
+    path("all-categories/",views.CategoryListView.as_view(),name="all-categories"),
+     path('category/<int:category_id>/', views.PostByCategoryView.as_view(), name='post-by-category'),
+  
 
 
       # Home view for /

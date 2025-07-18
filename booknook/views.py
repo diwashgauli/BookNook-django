@@ -4,7 +4,7 @@ from django.views.generic import ListView
 from .models import Post  # your book model
 
 from django.views.generic import TemplateView
-from .models import Post
+from .models import Post,Category
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
@@ -190,3 +190,37 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+    
+
+
+
+class UserProfileView(View):
+    def get(self, request, username):
+        user = User.objects.get(username=username)
+        books = user.posts.all()
+        return render(request, 'book/user_profile.html', {'profile_user': user, 'books': books})
+    
+
+
+
+class CategoryListView(ListView):
+    model=Category
+    template_name="book/categories.html"
+    context_object_name="categories"
+
+
+
+class PostByCategoryView(ListView):
+    model = Post
+    template_name="book/list.html"
+    context_object_name="posts"
+    paginate_by=3
+
+
+    def get_queryset(self):
+        query = super().get_queryset()
+        query = query.filter(
+    category__id=self.kwargs["category_id"],
+    
+).order_by("-created_at")
+        return query

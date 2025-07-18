@@ -37,15 +37,22 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ post.title }}</h5>
                         <p class="card-text text-muted mb-2">By {{ post.posted_by.get_full_name|default:post.posted_by.username }}</p>
-                        <p class="card-text fw-bold">${{ post.price|default:"N/A" }}</p>
+
+                        {% if post.trade_condition == 'sale' %}
+                            <p class="card-text fw-bold">Price: Rs. {{ post.price|default:"N/A" }}</p>
+                        {% elif post.trade_condition == 'exchange' %}
+                            <p class="card-text fw-bold">Exchange: {{ post.exchange_with|default:"No exchange details" }}</p>
+                        {% else %}
+                            <p class="card-text fw-bold">Trade Option: {{ post.get_trade_condition_display }}</p>
+                        {% endif %}
+
                         <div class="mt-auto d-flex justify-content-between">
                             <a href="{% url 'edit_post' post.pk %}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit Book">
                               <i class="bi bi-pencil-square"></i> Edit
                             </a>
 
                             <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete Book">
-
-                            <i class="bi bi-trash-fill"></i> Delete
+                              <i class="bi bi-trash-fill"></i> Delete
                             </a>
                         </div>
                     </div>

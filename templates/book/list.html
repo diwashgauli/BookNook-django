@@ -1,0 +1,39 @@
+{% extends "book/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center fw-bold mb-4">Book Listings</h2>
+
+    {% if posts %}
+    <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-center">
+        {% for post in posts %}
+        <div class="col mb-5">
+            <div class="book-card card h-100">
+                {% if post.image %}
+                <img class="card-img-top" src="{{ post.image.url }}" alt="{{ post.title }} Cover" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img class="card-img-top" src="https://placehold.co/450x300/007BFF/FFFFFF?text=No+Image" alt="No Cover Image" />
+                {% endif %}
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-author text-muted">Author: {{ post.author_name }}</p>
+                    <p class="card-text small">{{ post.description|truncatechars:100 }}</p>
+                    <p class="card-price fw-bold">Price: Rs. {{ post.price|default:"N/A" }}</p>
+                    <p class="mb-1"><strong>Trade Option:</strong> {{ post.get_trade_condition_display }}</p>
+                    <p class="mb-1"><strong>Book Condition:</strong> {{ post.get_book_condition_display }}</p>
+                    <p class="mb-3"><strong>Posted by:</strong> {{ post.posted_by.username }}</p>
+                    <a class="btn btn-outline-primary mt-auto" href="{% url 'post_detail' post.pk %}">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination (include from book/pagination.html) -->
+    {% include "book/pagination.html" %}
+
+    {% else %}
+    <p class="text-center">No books found in this category.</p>
+    {% endif %}
+</div>
+{% endblock %}
