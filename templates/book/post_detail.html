@@ -1,0 +1,95 @@
+{% extends "book/base.html" %}
+
+{% block content %}
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Book Details -->
+            <div class="card book-card p-4">
+                <div class="row">
+                    <div class="col-md-5">
+                        <img src="{% if post.image %}{{ post.image.url }}{% else %}https://placehold.co/400x600/007BFF/FFFFFF?text=No+Image{% endif %}" 
+                             class="img-fluid rounded" alt="{{ post.title }}">
+                    </div>
+                    <div class="col-md-7">
+                        <h2 class="card-title display-6">{{ post.title }}</h2>
+                        <h5 class="card-author text-muted">by {{ post.posted_by.get_full_name|default:post.posted_by.username }}</h5>
+
+                        {% if post.trade_condition == 'sale' %}
+                            <p class="card-price display-5 my-3">${{ post.price|default:"N/A" }}</p>
+                        {% else %}
+                            <p class="card-price display-5 my-3">For Exchange</p>
+                        {% endif %}
+
+                        <p class="small text-muted">
+                            Posted by: <a href="#">{{ post.posted_by.username }}</a> 
+                            on {{ post.created_at|date:"F d, Y" }}
+                        </p>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-block my-4">
+                            <a href="#" class="btn btn-primary btn-lg"><i class="bi bi-cart-plus-fill"></i> Add to Cart</a>
+
+                            {% if request.user == post.posted_by %}
+                                <a href="{% url 'edit_post' post.pk %}" class="btn btn-outline-primary">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a href="{% url 'delete_post' post.pk %}" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        <h5 class="mt-4">Description</h5>
+                        <p>{{ post.description|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="comment-section mt-5">
+                <h3 class="section-title">Comments (2)</h3>
+                <div class="card mb-3">
+                    <div class="card-body d-flex">
+                        <img src="https://placehold.co/50x50/6c757d/FFFFFF?text=U" class="rounded-circle me-3" alt="User avatar">
+                        <div>
+                            <h6 class="fw-bold">Jane Smith <small class="text-muted fw-normal ms-2">2 days ago</small></h6>
+                            <p>One of my all-time favorites! The prose is just beautiful.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body d-flex">
+                        <img src="https://placehold.co/50x50/ffc107/000000?text=U" class="rounded-circle me-3" alt="User avatar">
+                        <div>
+                            <h6 class="fw-bold">Bob Johnson <small class="text-muted fw-normal ms-2">1 week ago</small></h6>
+                            <p>A must-read for any literature enthusiast. The symbolism is incredible.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="col-lg-4">
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-header"><strong><i class="bi bi-plus-circle-fill"></i> Add Your Review</strong></div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Your Comment</label>
+                                <textarea class="form-control" id="comment" rows="4" placeholder="Share your thoughts..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends "book/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Profile Header -->
+    <div class="d-flex align-items-center mb-4">
+        <!-- Profile Image -->
+        <img src="https://placehold.co/100x100/adb5bd/495057?text=User" alt="User Avatar" class="rounded-circle me-3" style="width:100px; height:100px; object-fit: cover;">
+        
+        <div>
+            <h2 class="mb-0">{{ request.user.get_full_name|default:request.user.username }}</h2>
+            <p class="text-muted mb-1">@{{ request.user.username }}</p>
+            <p class="mb-2">Welcome to your profile! Here are your uploaded books.</p>
+
+            <!-- Profile stats -->
+            <div class="d-flex gap-4">
+                <div><strong>{{ posts|length }}</strong> Books</div>
+                <div><strong>120</strong> Followers</div>
+                <div><strong>150</strong> Following</div>
+            </div>
+        </div>
+
+        <div class="ms-auto d-flex gap-2">
+            <a href="{% url 'add_book' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle-fill"></i> Add Book
+            </a>
+            <a href="#" class="btn btn-outline-primary">Edit Profile</a>
+        </div>
+    </div>
+
+    <!-- Books Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for post in posts %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="{% if post.image %}{{ post.image.url }}{% else %}https://placehold.co/450x300/FFC107/000000?text=No+Image{% endif %}" class="card-img-top" alt="{{ post.title }}" style="object-fit: cover; height: 200px;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text text-muted mb-2">By {{ post.posted_by.get_full_name|default:post.posted_by.username }}</p>
+                        <p class="card-text fw-bold">${{ post.price|default:"N/A" }}</p>
+                        <div class="mt-auto d-flex justify-content-between">
+                            <a href="{% url 'edit_post' post.pk %}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit Book">
+                              <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+
+                            <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete Book">
+
+                            <i class="bi bi-trash-fill"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center text-muted">You haven't uploaded any books yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

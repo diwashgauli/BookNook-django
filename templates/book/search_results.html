@@ -1,0 +1,18 @@
+{% extends 'book/base.html' %}
+
+{% block content %}
+  <h2>Search Results</h2>
+
+  {% if results %}
+    <ul>
+      {% for post in results %}
+        <li>
+          <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+          <p>{{ post.description }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No results found.</p>
+  {% endif %}
+{% endblock %}
