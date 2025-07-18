@@ -10,6 +10,8 @@ urlpatterns = [
     path('books/<int:pk>/edit/', views.PostUpdateView.as_view(), name='edit_post'),
     path('books/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('search/', views.BookSearchView.as_view(), name='book_search'),
+    path('comment/', views.CommentView.as_view(), name='comment'),
+    path('profile/edit/', views.EditProfileView.as_view(), name='edit-profile'),
 
 
       # Home view for /

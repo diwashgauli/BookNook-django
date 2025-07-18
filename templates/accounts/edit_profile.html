@@ -1,0 +1,27 @@
+{% extends "book/base.html" %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4">Edit Profile</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="id_first_name" class="form-label">First Name</label>
+            <input type="text" name="first_name" class="form-control" id="id_first_name" value="{{ form.first_name.value|default_if_none:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="id_last_name" class="form-label">Last Name</label>
+            <input type="text" name="last_name" class="form-control" id="id_last_name" value="{{ form.last_name.value|default_if_none:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

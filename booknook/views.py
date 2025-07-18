@@ -9,9 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
 from django.views.generic import ListView,CreateView,DeleteView,UpdateView,DetailView
-from .models import Post
-from booknook.forms import PostForm
+from .models import Post,Comment
+from booknook.forms import PostForm,CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from .forms import EditProfileForm
 
 class HomeView(ListView):
     model = Post
@@ -79,8 +82,14 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'book/post_detail.html'  # create this template
+    template_name = 'book/post_detail.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        context['comments'] = Comment.objects.filter(post=post).order_by('-created_at')
+        return context
 
 
 class SearchView(ListView):
@@ -140,3 +149,44 @@ class BookSearchView(View):
                 "popular_books": popular_books,
             },
         )
+
+class CommentView(View):
+    def post(self, request, *args, **kwargs):
+        post_id = request.POST["post"]
+        
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.post_id = post_id  # assign the post here
+            comment.save()
+            return redirect("post_detail", post_id)
+        else:
+            post = Post.objects.get(pk=post_id)
+            popular_posts = Post.objects.filter(
+                published_at__isnull=False, status="active"
+            ).order_by("-published_at")[:5]
+
+            trending_posts = Post.objects.filter(
+                published_at__isnull=False, status="active"
+            ).order_by("-views")[:5]
+
+            return render(
+                request,
+                "book/post_detail.html",
+                {
+                    "post": post,
+                    "form": form,
+                    "popular_posts": popular_posts,
+                    "trending_posts": trending_posts,
+                },
+            )
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = EditProfileForm
+    template_name = 'accounts/edit_profile.html'
+    success_url = reverse_lazy('my_profile')  # Change to your actual profile page name
+
+    def get_object(self, queryset=None):
+        return self.request.user
