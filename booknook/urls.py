@@ -15,6 +15,7 @@ urlpatterns = [
     path('profile/<str:username>/', views.UserProfileView.as_view(), name='user_profile'),
     path("all-categories/",views.CategoryListView.as_view(),name="all-categories"),
      path('category/<int:category_id>/', views.PostByCategoryView.as_view(), name='post-by-category'),
+     path('subscribe/', views.SubscribeView.as_view(), name='subscribe'),
   
 
 

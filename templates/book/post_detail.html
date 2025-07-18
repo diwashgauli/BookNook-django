@@ -2,7 +2,6 @@
 
 {% block content %}
 
-<!-- Main Content -->
 <div class="container mt-5">
     <div class="row">
         <div class="col-lg-8">
@@ -18,9 +17,9 @@
                         <h5 class="card-author text-muted">by {{ post.posted_by.get_full_name|default:post.posted_by.username }}</h5>
 
                         {% if post.trade_condition == 'sale' %}
-                            <p class="card-price display-5 my-3">${{ post.price|default:"N/A" }}</p>
+                            <p class="card-price display-5 my-3">Rs.{{ post.price|default:"N/A" }}</p>
                         {% else %}
-                            <p class="card-price display-5 my-3">For Exchange</p>
+                            <p class="card-price display-5 my-3">For Exchange: {{post.exchange_with}}</p>
                         {% endif %}
 
                         <p class="small text-muted">
@@ -32,18 +31,16 @@
                         </p>
 
                         <!-- Action Buttons -->
+                        {% if request.user == post.posted_by %}
                         <div class="d-grid gap-2 d-md-block my-4">
-                            <a href="#" class="btn btn-primary btn-lg"><i class="bi bi-cart-plus-fill"></i> Add to Cart</a>
-
-                            {% if request.user == post.posted_by %}
-                                <a href="{% url 'edit_post' post.pk %}" class="btn btn-outline-primary">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                                <a href="{% url 'delete_post' post.pk %}" class="btn btn-outline-danger">
-                                    <i class="bi bi-trash-fill"></i> Delete
-                                </a>
-                            {% endif %}
+                            <a href="{% url 'edit_post' post.pk %}" class="btn btn-outline-primary">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <a href="{% url 'delete_post' post.pk %}" class="btn btn-outline-danger">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </a>
                         </div>
+                        {% endif %}
 
                         <h5 class="mt-4">Description</h5>
                         <p>{{ post.description|linebreaks }}</p>
@@ -71,24 +68,22 @@
                     <p>No comments yet. Be the first to comment!</p>
                 {% endfor %}
             </div>
-
         </div>
 
         <!-- Sidebar -->
         <aside class="col-lg-4">
             <div class="sidebar">
                 <div class="card">
-                    <div class="card-header"><strong><i class="bi bi-plus-circle-fill"></i> Add Your Review</strong></div>
+                    <div class="card-header"><strong><i class="bi bi-plus-circle-fill"></i> Add Your Comment</strong></div>
                     <div class="card-body">
                         <form method="POST" action="{% url 'comment' %}">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="comment" class="form-label">Your Comment</label>
-                                <textarea name="content" class="form-control" id="comment" rows="4" placeholder="Share your thoughts..."></textarea>
+                                <textarea name="content" class="form-control" id="comment" rows="4" placeholder="Share your thoughts..." required></textarea>
                             </div>
-                            <!-- Include the post ID as a hidden input -->
                             <input type="hidden" name="post" value="{{ post.id }}">
-                            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                            <button type="submit" class="btn btn-primary w-100">Comment</button>
                         </form>
                     </div>
                 </div>
