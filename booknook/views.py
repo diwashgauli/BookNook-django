@@ -16,15 +16,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 class HomeView(ListView):
     model = Post
     template_name = 'book/home.html'
-    context_object_name = 'all_books'  
+    context_object_name = 'all_books'
+    paginate_by = 3  # This must be inside the class, not outside
 
     def get_queryset(self):
-       
         return Post.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-       
         context['trending_books'] = Post.objects.filter(is_trending=True)
         context['popular_books'] = Post.objects.filter(is_popular=True)
         return context
@@ -98,3 +97,46 @@ class SearchView(ListView):
                 Q(author_name__icontains=query)
             )
         return Post.objects.none()
+    
+
+
+from django.views import View
+from django.shortcuts import render
+from django.core.paginator import Paginator, PageNotAnInteger
+from django.db.models import Q
+from .models import Post
+
+class BookSearchView(View):
+    template_name = "book/search_results.html"
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("query", "")
+
+        book_list = Post.objects.filter(
+            (Q(title__icontains=query) | Q(author_name__icontains=query))
+        ).order_by("-created_at")
+
+        page = request.GET.get("page", 1)
+        paginate_by = 2
+        paginator = Paginator(book_list, paginate_by)
+
+        try:
+            books = paginator.page(page)
+        except PageNotAnInteger:
+            books = paginator.page(1)
+        except:
+            books = paginator.page(paginator.num_pages)
+
+        trending_books = Post.objects.filter(is_trending=True).order_by("-created_at")[:5]
+        popular_books = Post.objects.filter(is_popular=True).order_by("-created_at")[:5]
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "page_obj": books,
+                "query": query,
+                "trending_books": trending_books,
+                "popular_books": popular_books,
+            },
+        )

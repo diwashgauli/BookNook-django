@@ -1,6 +1,5 @@
 {% extends "book/base.html" %}
 
-
 {% block content %}
 
     <!-- Hero Section -->
@@ -18,66 +17,36 @@
             <div class="col-lg-9">
                 <h2 class="section-title">Featured Books</h2>
                 <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-center">
-                    <!-- Dummy Book 1 -->
-                   {% for book in all_books %}
-<div class="col mb-5">
-    <div class="book-card card h-100">
-        {% if book.image %}
-            <img class="card-img-top" src="{{ book.image.url }}" alt="{{ book.title }} Cover" style="height: 200px; object-fit: cover;">
-        {% else %}
-            <img class="card-img-top" src="https://placehold.co/450x300/007BFF/FFFFFF?text=No+Image" alt="No Cover Image" />
-        {% endif %}
-
-        <div class="card-body p-4 d-flex flex-column">
-            <h5 class="card-title">{{ book.title }}</h5>
-            <p class="card-author text-muted">Author: {{ book.author_name }}</p>
-            <p class="card-text small">{{ book.description|truncatechars:100 }}</p>
-            <p class="card-price fw-bold">Price: Rs. {{ book.price|default:"N/A" }}</p>
-            <p class="mb-1"><strong>Trade Option:</strong> {{ book.get_trade_condition_display }}</p>
-            <p class="mb-1"><strong>Book Condition:</strong> {{ book.get_book_condition_display }}</p>
-            <p class="mb-1"><strong>Category:</strong> 
-    {% if book.category %}
-        {{ book.category.name }}
-    {% else %}
-        N/A
-    {% endif %}
-</p>
-            <p class="mb-3"><strong>Posted by:</strong> {{ book.posted_by.username }}</p>
-            <a class="btn btn-outline-primary mt-auto" href="{% url 'post_detail' book.pk %}">Read More</a>
-        </div>
-    </div>
-</div>
-{% empty %}
-<p>No books available.</p>
-{% endfor %}
-
-                    <!-- Add more dummy books as needed -->
-                </div>
-
-                <!-- Most Popular Books -->
-                <h2 class="section-title mt-5">Most Popular</h2>
-                <div class="horizontal-scroll">
-                    <!-- Dummy Popular Book 1 -->
-                   {% for book in popular_books %}
-    <a href="{% url 'post_detail' book.pk %}" class="text-decoration-none text-dark">
-        <div class="book-card card me-3" style="width: 18rem;">
-            {% if book.image %}
-                <img class="card-img-top" src="{{ book.image.url }}" alt="{{ book.title }} Cover" style="height: 200px; object-fit: cover;">
-            {% else %}
-                <img class="card-img-top" src="https://placehold.co/450x300/28A745/FFFFFF?text=Popular+Book" alt="No Image" />
-            {% endif %}
-            <div class="card-body p-4">
-                <h5 class="card-title">{{ book.title }}</h5>
-                <p class="card-author text-muted">{{ book.author_name }}</p>
-                <p class="card-price fw-bold">Rs. {{ book.price|default:"N/A" }}</p>
-            </div>
-        </div>
-    </a>
-{% empty %}
-    <p>No popular books available.</p>
-{% endfor %}
-
-                    <!-- Add more popular books -->
+                    {% for book in all_books %}
+                    <div class="col mb-5">
+                        <div class="book-card card h-100">
+                            {% if book.image %}
+                                <img class="card-img-top" src="{{ book.image.url }}" alt="{{ book.title }} Cover" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img class="card-img-top" src="https://placehold.co/450x300/007BFF/FFFFFF?text=No+Image" alt="No Cover Image" />
+                            {% endif %}
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-author text-muted">Author: {{ book.author_name }}</p>
+                                <p class="card-text small">{{ book.description|truncatechars:100 }}</p>
+                                <p class="card-price fw-bold">Price: Rs. {{ book.price|default:"N/A" }}</p>
+                                <p class="mb-1"><strong>Trade Option:</strong> {{ book.get_trade_condition_display }}</p>
+                                <p class="mb-1"><strong>Book Condition:</strong> {{ book.get_book_condition_display }}</p>
+                                <p class="mb-1"><strong>Category:</strong> 
+                                    {% if book.category %}
+                                        {{ book.category.name }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </p>
+                                <p class="mb-3"><strong>Posted by:</strong> {{ book.posted_by.username }}</p>
+                                <a class="btn btn-outline-primary mt-auto" href="{% url 'post_detail' book.pk %}">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No books available.</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -88,28 +57,53 @@
                         <div class="card-header"><strong>Trending Books</strong></div>
                         <div class="card-body">
                             <ul class="list-unstyled mb-0">
-                       {% for book in trending_books %}
-    <li class="d-flex mb-3 align-items-center">
-        <a href="{% url 'post_detail' book.pk %}" class="d-flex align-items-center text-decoration-none text-dark w-100">
-            {% if book.image %}
-                <img src="{{ book.image.url }}" class="me-3" style="width: 60px; height: 80px; object-fit: cover;" alt="{{ book.title }}">
-            {% else %}
-                <img src="https://placehold.co/60x80" class="me-3" alt="No Image">
-            {% endif %}
-            <div>
-                <h6 class="mb-0">{{ book.title }}</h6>
-                <small class="text-muted">{{ book.author_name }}</small>
-            </div>
-        </a>
-    </li>
-{% empty %}
-    <li>No trending books available.</li>
-{% endfor %}
-
-                                <!-- Add more trending books -->
+                                {% for book in trending_books %}
+                                <li class="d-flex mb-3 align-items-center">
+                                    <a href="{% url 'post_detail' book.pk %}" class="d-flex align-items-center text-decoration-none text-dark w-100">
+                                        {% if book.image %}
+                                            <img src="{{ book.image.url }}" class="me-3" style="width: 60px; height: 80px; object-fit: cover;" alt="{{ book.title }}">
+                                        {% else %}
+                                            <img src="https://placehold.co/60x80" class="me-3" alt="No Image">
+                                        {% endif %}
+                                        <div>
+                                            <h6 class="mb-0">{{ book.title }}</h6>
+                                            <small class="text-muted">{{ book.author_name }}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                                {% empty %}
+                                <li>No trending books available.</li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header"><strong>Most Popular</strong></div>
+                        <div class="card-body">
+                            <div class="horizontal-scroll" style="overflow-x:auto; white-space: nowrap;">
+                                {% for book in popular_books %}
+                                <a href="{% url 'post_detail' book.pk %}" class="text-decoration-none text-dark d-inline-block me-3" style="width: 14rem; vertical-align: top;">
+                                    <div class="book-card card">
+                                        {% if book.image %}
+                                            <img class="card-img-top" src="{{ book.image.url }}" alt="{{ book.title }} Cover" style="height: 200px; object-fit: cover;">
+                                        {% else %}
+                                            <img class="card-img-top" src="https://placehold.co/450x300/28A745/FFFFFF?text=Popular+Book" alt="No Image" />
+                                        {% endif %}
+                                        <div class="card-body p-2">
+                                            <h6 class="card-title mb-1">{{ book.title }}</h6>
+                                            <p class="card-author text-muted mb-1">{{ book.author_name }}</p>
+                                            <p class="card-price fw-bold mb-0">Rs. {{ book.price|default:"N/A" }}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% empty %}
+                                <p>No popular books available.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card">
                         <div class="card-header"><strong>Subscribe Us</strong></div>
                         <div class="card-body">
@@ -122,9 +116,11 @@
                             </form>
                         </div>
                     </div>
-                </aside>
-            </div>
+                </div>
+            </aside>
         </div>
     </div>
+
+    {% include 'book/pagination.html' %}
 
 {% endblock content %}
